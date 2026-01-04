@@ -26,6 +26,8 @@ import {
   Layers,
   Gamepad2,
   Github,
+  ChevronDown,
+  Sparkles,
 } from "lucide-react";
 
 // Define Power Tiers for comparison
@@ -33,40 +35,52 @@ import {
 const POWER_TIERS: PowerTier[] = [
   {
     name: "Potato / Calculator",
+    emoji: "🥔",
     minScore: 0,
     color: "text-gray-400",
     description: "Basic tasks only. Might struggle with modern web apps.",
+    shortDesc: "Basic tasks only",
   },
   {
     name: "Office Clerk",
+    emoji: "📎",
     minScore: 500000,
     color: "text-blue-400",
     description: "Good for documents, browsing, and media consumption.",
+    shortDesc: "Documents, browsing",
   },
   {
     name: "Student Laptop",
+    emoji: "💻",
     minScore: 1000000,
     color: "text-green-400",
     description: "Capable multitasker. Handles light gaming and creative work.",
+    shortDesc: "Light gaming, multitasking",
   },
   {
     name: "Creative Pro",
+    emoji: "🎨",
     minScore: 1500000,
     color: "text-purple-400",
     description: "Great for video editing, coding, and design work.",
+    shortDesc: "Video editing, development",
   },
   {
     name: "Gaming Rig",
+    emoji: "🎮",
     minScore: 2000000,
     color: "text-orange-400",
     description: "High-performance machine ready for AAA gaming.",
+    shortDesc: "AAA gaming ready",
   },
   {
     name: "Titan Workstation",
+    emoji: "⚡",
     minScore: 3000000,
     color: "text-red-500",
     description:
       "Extreme performance. Crushes heavy rendering and computation.",
+    shortDesc: "Heavy rendering, computation",
   },
 ];
 
@@ -83,6 +97,7 @@ const App: React.FC = () => {
   const [totalScore, setTotalScore] = useState(0);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [copied, setCopied] = useState(false);
+  const [howItWorksOpen, setHowItWorksOpen] = useState(false);
 
   useEffect(() => {
     setSystemInfo(getSystemInfo());
@@ -347,7 +362,7 @@ ${POWER_TIERS.map(
           {/* Welcome Info - Only show when IDLE */}
           <div className="mb-8">
             <h2 className="text-2xl md:text-3xl font-bold mb-2 text-white">
-              Test Your Device
+              Browser Hardware Diagnostics
             </h2>
             <p className="text-slate-400 mb-4">
               Benchmark your CPU and GPU performance in seconds, right in your
@@ -415,11 +430,17 @@ ${POWER_TIERS.map(
 
               {status === BenchmarkStatus.COMPLETED ? (
                 <RotateCcw size={24} />
-              ) : (
+              ) : status === BenchmarkStatus.IDLE ? (
                 <Play size={24} fill="currentColor" />
+              ) : (
+                <Sparkles size={24} className="animate-bounce" />
               )}
               <span>
-                {status === BenchmarkStatus.COMPLETED ? "Rerun" : "Start"}
+                {status === BenchmarkStatus.COMPLETED
+                  ? "Rerun"
+                  : status === BenchmarkStatus.IDLE
+                  ? "Start"
+                  : "Running"}
               </span>
             </button>
           </div>
@@ -638,7 +659,7 @@ ${POWER_TIERS.map(
                             {systemInfo.threadsNote && (
                               <span className="text-slate-600 text-[10px]">
                                 {" "}
-                                *
+                                {systemInfo.threadsNote}
                               </span>
                             )}
                           </div>
@@ -660,10 +681,199 @@ ${POWER_TIERS.map(
 
         {/* History Section */}
         <HistoryLog history={history} onClear={clearHistory} />
+
+        {/* How It Works Section */}
+        <section className="mt-16 pt-12 border-t border-slate-800">
+          <button
+            onClick={() => setHowItWorksOpen(!howItWorksOpen)}
+            className="w-full text-left text-2xl font-bold text-white flex items-center justify-between gap-3 group hover:text-cyan-400 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <span className="text-cyan-400">🔬</span> How It Works
+            </div>
+            <ChevronDown
+              size={24}
+              className={`text-slate-400 group-hover:text-cyan-400 transition-transform duration-300 ${
+                howItWorksOpen ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+
+          <div
+            className={`overflow-hidden transition-all duration-500 ease-in-out ${
+              howItWorksOpen
+                ? "max-h-[2000px] opacity-100 mt-8"
+                : "max-h-0 opacity-0 mt-0"
+            }`}
+          >
+            {/* Benchmark Tests */}
+            <div className="mb-10">
+              <h3 className="text-lg font-semibold text-slate-300 mb-4">
+                Benchmark Tests
+              </h3>
+              <div className="overflow-x-auto rounded-xl border border-slate-800">
+                <table className="w-full text-sm">
+                  <thead className="bg-slate-900/80">
+                    <tr className="text-left text-slate-400 uppercase text-xs tracking-wider">
+                      <th className="px-4 py-3 font-semibold">Test</th>
+                      <th className="px-4 py-3 font-semibold">Duration</th>
+                      <th className="px-4 py-3 font-semibold">Method</th>
+                      <th className="px-4 py-3 font-semibold">
+                        Score Calculation
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800">
+                    <tr className="bg-slate-900/30 hover:bg-slate-800/50 transition-colors">
+                      <td className="px-4 py-3 font-medium text-cyan-400">
+                        Single-Core
+                      </td>
+                      <td className="px-4 py-3 text-slate-300">2.5s</td>
+                      <td className="px-4 py-3 text-slate-400">
+                        Web Worker running sin/cos/sqrt math loops
+                      </td>
+                      <td className="px-4 py-3 text-slate-300 font-mono text-xs">
+                        Operations ÷ 1000
+                      </td>
+                    </tr>
+                    <tr className="bg-slate-900/30 hover:bg-slate-800/50 transition-colors">
+                      <td className="px-4 py-3 font-medium text-indigo-400">
+                        Multi-Core
+                      </td>
+                      <td className="px-4 py-3 text-slate-300">3s</td>
+                      <td className="px-4 py-3 text-slate-400">
+                        N workers (one per logical core) in parallel
+                      </td>
+                      <td className="px-4 py-3 text-slate-300 font-mono text-xs">
+                        Total ops ÷ 1000
+                      </td>
+                    </tr>
+                    <tr className="bg-slate-900/30 hover:bg-slate-800/50 transition-colors">
+                      <td className="px-4 py-3 font-medium text-pink-400">
+                        GPU Compute
+                      </td>
+                      <td className="px-4 py-3 text-slate-300">3s</td>
+                      <td className="px-4 py-3 text-slate-400">
+                        WebGL fragment shader (600 iterations/pixel)
+                      </td>
+                      <td className="px-4 py-3 text-slate-300 font-mono text-xs">
+                        FPS × 150 × consistency
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Composite Score Formula */}
+            <div className="mb-10">
+              <h3 className="text-lg font-semibold text-slate-300 mb-4">
+                Composite Score Formula
+              </h3>
+              <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6">
+                <code className="text-cyan-400 font-mono text-lg block mb-3">
+                  Composite = (Single-Core × 10) + (Multi-Core × 0.5) + (GPU ×
+                  10)
+                </code>
+                <p className="text-slate-500 text-sm">
+                  <span className="text-yellow-500">Note:</span> Multi-core is
+                  weighted lower because browser thread capping makes it
+                  unreliable.
+                </p>
+              </div>
+            </div>
+
+            {/* Power Tiers */}
+            <div className="mb-10">
+              <h3 className="text-lg font-semibold text-slate-300 mb-4">
+                Power Tiers
+              </h3>
+              <div className="overflow-x-auto rounded-xl border border-slate-800">
+                <table className="w-full text-sm">
+                  <thead className="bg-slate-900/80">
+                    <tr className="text-left text-slate-400 uppercase text-xs tracking-wider">
+                      <th className="px-4 py-3 font-semibold">Tier</th>
+                      <th className="px-4 py-3 font-semibold">Min Score</th>
+                      <th className="px-4 py-3 font-semibold">Description</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800">
+                    {POWER_TIERS.map((tier, index) => (
+                      <tr
+                        key={index}
+                        className="bg-slate-900/30 hover:bg-slate-800/50 transition-colors"
+                      >
+                        <td className={`px-4 py-3 font-medium ${tier.color}`}>
+                          {tier.emoji} {tier.name}
+                        </td>
+                        <td className="px-4 py-3 text-slate-300 font-mono">
+                          {tier.minScore.toLocaleString()}
+                        </td>
+                        <td className="px-4 py-3 text-slate-400">
+                          {tier.shortDesc}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Browser Limitations */}
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold text-slate-300 mb-4 flex items-center gap-2">
+                <span className="text-yellow-500">⚠️</span> Browser Limitations
+              </h3>
+              <p className="text-slate-500 text-sm mb-4">
+                Due to browser privacy protections:
+              </p>
+              <div className="overflow-x-auto rounded-xl border border-slate-800">
+                <table className="w-full text-sm">
+                  <thead className="bg-slate-900/80">
+                    <tr className="text-left text-slate-400 uppercase text-xs tracking-wider">
+                      <th className="px-4 py-3 font-semibold">API</th>
+                      <th className="px-4 py-3 font-semibold">Limitation</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800">
+                    <tr className="bg-slate-900/30 hover:bg-slate-800/50 transition-colors">
+                      <td className="px-4 py-3 font-mono text-cyan-400 text-xs">
+                        navigator.hardwareConcurrency
+                      </td>
+                      <td className="px-4 py-3 text-slate-400">
+                        Often capped at 8-16 threads
+                      </td>
+                    </tr>
+                    <tr className="bg-slate-900/30 hover:bg-slate-800/50 transition-colors">
+                      <td className="px-4 py-3 font-mono text-cyan-400 text-xs">
+                        navigator.deviceMemory
+                      </td>
+                      <td className="px-4 py-3 text-slate-400">
+                        Max 8GB reported
+                      </td>
+                    </tr>
+                    <tr className="bg-slate-900/30 hover:bg-slate-800/50 transition-colors">
+                      <td className="px-4 py-3 font-mono text-cyan-400 text-xs">
+                        screen.width/height
+                      </td>
+                      <td className="px-4 py-3 text-slate-400">
+                        Returns CSS pixels (use devicePixelRatio for physical)
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p className="text-slate-600 text-xs mt-3">
+                TitanBench accounts for these limitations and explains them in
+                the AI analysis prompt.
+              </p>
+            </div>
+          </div>
+        </section>
       </main>
 
       <footer className="py-6 text-center text-slate-600 text-xs border-t border-slate-900 bg-slate-950">
-        <p>TitanBench v1.2.0 • Browser Hardware Diagnostics</p>
+        <p>TitanBench • Built with ❤️ by Hoang Tran</p>
       </footer>
     </div>
   );

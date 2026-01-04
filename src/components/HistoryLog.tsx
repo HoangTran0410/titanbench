@@ -15,19 +15,19 @@ interface HistoryLogProps {
   onClear: () => void;
 }
 
+const formatDate = (timestamp: number) => {
+  return new Date(timestamp).toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
 const HistoryLog: React.FC<HistoryLogProps> = ({ history, onClear }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   if (history.length === 0) return null;
-
-  const formatDate = (timestamp: number) => {
-    return new Date(timestamp).toLocaleString("en-US", {
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
 
   return (
     <div className="w-full max-w-4xl mx-auto mt-12 mb-8">
@@ -39,7 +39,7 @@ const HistoryLog: React.FC<HistoryLogProps> = ({ history, onClear }) => {
         >
           <div className="flex items-center gap-3">
             <History className="text-cyan-400" size={20} />
-            <h3 className="font-bold text-slate-200">Mission Logs</h3>
+            <h3 className="font-bold text-slate-200">History</h3>
             <span className="bg-slate-800 text-slate-400 text-xs font-mono py-0.5 px-2 rounded-full border border-slate-700">
               {history.length}
             </span>

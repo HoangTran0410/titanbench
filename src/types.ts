@@ -32,8 +32,10 @@ export interface SystemInfo {
 
 export interface PowerTier {
   name: string;
+  emoji: string;
   color: string;
   description: string;
+  shortDesc: string;
   minScore: number;
 }
 
