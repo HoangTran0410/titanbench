@@ -10,7 +10,7 @@
 
 **Measure your device's CPU and GPU performance directly in the browser.**
 
-[Try it Live](#) · [How It Works](#how-it-works) · [AI Analysis](#ai-analysis-feature)
+[Try it Live](http://hoangtran99.is-a.dev/titanbench) · [How It Works](#-how-it-works) · [AI Analysis](#-ai-analysis-feature)
 
 </div>
 

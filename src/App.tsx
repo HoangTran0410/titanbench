@@ -335,7 +335,30 @@ ${POWER_TIERS.map(
       <main className="flex-1 max-w-6xl mx-auto w-full px-6 py-8">
         {/* Hero / Status Section */}
         <section className="mb-12 text-center">
-          <div className="inline-flex items-center justify-center p-3 rounded-full bg-slate-900 border border-slate-800 mb-8 shadow-lg">
+          {/* Welcome Info - Only show when IDLE */}
+          <div className="mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold mb-2 text-white">
+              Test Your Device
+            </h2>
+            <p className="text-slate-400 mb-4">
+              Benchmark your CPU and GPU performance in seconds, right in your
+              browser.
+            </p>
+            <div className="flex flex-wrap justify-center gap-3 text-xs text-slate-500">
+              <span className="flex items-center gap-1.5 bg-slate-900/50 px-3 py-1.5 rounded-full border border-slate-800">
+                <Cpu className="text-cyan-400" size={14} /> CPU Single
+              </span>
+              <span className="flex items-center gap-1.5 bg-slate-900/50 px-3 py-1.5 rounded-full border border-slate-800">
+                <Layers className="text-indigo-400" size={14} /> CPU Multi
+              </span>
+              <span className="flex items-center gap-1.5 bg-slate-900/50 px-3 py-1.5 rounded-full border border-slate-800">
+                <Gamepad2 className="text-pink-400" size={14} /> GPU
+              </span>
+              <span className="text-slate-600">~8s</span>
+            </div>
+          </div>
+
+          <div className="inline-flex items-center justify-center p-3 rounded-full bg-slate-900 border border-slate-800 mt-8 shadow-lg">
             <span
               className={`w-2.5 h-2.5 rounded-full mr-3 ${
                 isRunning
@@ -387,9 +410,7 @@ ${POWER_TIERS.map(
                 <Play size={24} fill="currentColor" />
               )}
               <span>
-                {status === BenchmarkStatus.COMPLETED
-                  ? "Rerun Test"
-                  : "Initialize"}
+                {status === BenchmarkStatus.COMPLETED ? "Rerun" : "Start"}
               </span>
             </button>
           </div>
