@@ -1,0 +1,5 @@
+{
+  "name": "TitanBench - Hardware Benchmark",
+  "description": "A comprehensive browser-based CPU and GPU benchmark tool for result analysis.",
+  "requestFramePermissions": []
+}
