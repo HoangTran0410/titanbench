@@ -70,19 +70,21 @@ bun run preview # or: npm run preview
 ### Composite Score Formula
 
 ```
-Composite = (Single-Core × 2) + (Multi-Core × 1) + (GPU × 10)
+Composite = (Single-Core × 10) + (Multi-Core × 0.5) + (GPU × 10)
 ```
+
+> **Note**: Multi-core is weighted lower because browser thread capping makes it unreliable.
 
 ### Power Tiers
 
 | Tier | Min Score | Description |
 |------|-----------|-------------|
 | 🥔 Potato / Calculator | 0 | Basic tasks only |
-| 📎 Office Clerk | 100,000 | Documents, browsing |
-| 💻 Student Laptop | 300,000 | Light gaming, multitasking |
-| 🎨 Creative Pro | 600,000 | Video editing, development |
-| 🎮 Gaming Rig | 1,000,000 | AAA gaming ready |
-| ⚡ Titan Workstation | 1,800,000 | Heavy rendering, computation |
+| 📎 Office Clerk | 500,000 | Documents, browsing |
+| 💻 Student Laptop | 1,000,000 | Light gaming, multitasking |
+| 🎨 Creative Pro | 1,500,000 | Video editing, development |
+| 🎮 Gaming Rig | 2,000,000 | AAA gaming ready |
+| ⚡ Titan Workstation | 3,000,000 | Heavy rendering, computation |
 
 ---
 

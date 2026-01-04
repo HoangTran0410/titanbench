@@ -59,23 +59,24 @@ titanbench/
 ### Power Tiers
 Scores are classified into 6 tiers based on composite score:
 1. Potato / Calculator (0+)
-2. Office Clerk (100k+)
-3. Student Laptop (300k+)
-4. Creative Pro (600k+)
-5. Gaming Rig (1M+)
-6. Titan Workstation (1.8M+)
+2. Office Clerk (500k+)
+3. Student Laptop (1M+)
+4. Creative Pro (1.5M+)
+5. Gaming Rig (2M+)
+6. Titan Workstation (3M+)
 
 **Composite Score Formula**:
 ```
-total = cpuSingle * 2 + cpuMulti * 1 + gpuScore * 10
+total = cpuSingle * 10 + cpuMulti * 0.5 + gpuScore * 10
 ```
+> Multi-core is weighted lower because browser thread capping makes it unreliable.
 
 ## Architecture Notes
 
 ### Web Worker Pattern
 CPU benchmarks use inline Web Workers (blob URLs) to avoid blocking the main thread. Each worker:
-1. Runs a 250ms warmup phase
-2. Executes 50,000 math operations per batch
+1. Runs a 2-stage warmup (100ms cache warming + 200ms JIT/P-core migration)
+2. Executes 100,000 math operations per batch (4× loop unrolling)
 3. Reports total operations on completion
 
 ### GPU Benchmark

@@ -25,10 +25,11 @@ import {
   Check,
   Layers,
   Gamepad2,
+  Github,
 } from "lucide-react";
 
 // Define Power Tiers for comparison
-// Recalibrated for modern hardware where High End > 2M total score
+// Recalibrated for new formula: Single×10 + Multi×0.5 + GPU×10
 const POWER_TIERS: PowerTier[] = [
   {
     name: "Potato / Calculator",
@@ -38,31 +39,31 @@ const POWER_TIERS: PowerTier[] = [
   },
   {
     name: "Office Clerk",
-    minScore: 100000,
+    minScore: 500000,
     color: "text-blue-400",
     description: "Good for documents, browsing, and media consumption.",
   },
   {
     name: "Student Laptop",
-    minScore: 300000,
+    minScore: 1000000,
     color: "text-green-400",
     description: "Capable multitasker. Handles light gaming and creative work.",
   },
   {
     name: "Creative Pro",
-    minScore: 600000,
+    minScore: 1500000,
     color: "text-purple-400",
     description: "Great for video editing, coding, and design work.",
   },
   {
     name: "Gaming Rig",
-    minScore: 1000000,
+    minScore: 2000000,
     color: "text-orange-400",
     description: "High-performance machine ready for AAA gaming.",
   },
   {
     name: "Titan Workstation",
-    minScore: 1800000,
+    minScore: 3000000,
     color: "text-red-500",
     description:
       "Extreme performance. Crushes heavy rendering and computation.",
@@ -111,10 +112,11 @@ const App: React.FC = () => {
   const calculateTotalAndTier = (
     finalScores: BenchmarkScores
   ): { total: number; tier: PowerTier } => {
-    // Weighted formula
+    // Weighted formula: Single-core and GPU are reliable, multi-core is capped by browsers
+    // Single×10 + Multi×0.5 + GPU×10
     const total = Math.floor(
-      finalScores.cpuSingle * 2 +
-        finalScores.cpuMulti * 1 +
+      finalScores.cpuSingle * 10 +
+        finalScores.cpuMulti * 0.5 +
         finalScores.gpuScore * 10
     );
 
@@ -260,8 +262,9 @@ ${systemInfo?.userAgent || "Unknown"}
 
 ### Composite Score Formula:
 \`\`\`
-Composite = (Single-Core × 2) + (Multi-Core × 1) + (GPU × 10)
+Composite = (Single-Core × 10) + (Multi-Core × 0.5) + (GPU × 10)
 \`\`\`
+Note: Multi-core is weighted lower because browser thread capping makes it unreliable.
 
 ### Tier Thresholds:
 | Tier | Min Score | Use Case |
@@ -317,7 +320,7 @@ ${POWER_TIERS.map(
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-cyan-500 selection:text-white">
       {/* Header */}
-      <header className="border-b border-slate-800 bg-slate-900/50 backdrop-blur-md sticky top-0 z-10">
+      <header className="border-b border-slate-800 bg-slate-900/50 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Activity className="text-cyan-400" size={24} />
@@ -325,9 +328,15 @@ ${POWER_TIERS.map(
               Titan<span className="text-cyan-400">Bench</span>
             </h1>
           </div>
-          <div className="text-xs font-mono text-slate-400 hidden sm:block">
-            v1.2.0 // Browser-based Diagnostics
-          </div>
+          <a
+            href="https://github.com/HoangTran0410/titanbench"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+          >
+            <Github size={20} />
+            <span className="text-xs font-mono hidden sm:block">GitHub</span>
+          </a>
         </div>
       </header>
 
@@ -354,7 +363,7 @@ ${POWER_TIERS.map(
               <span className="flex items-center gap-1.5 bg-slate-900/50 px-3 py-1.5 rounded-full border border-slate-800">
                 <Gamepad2 className="text-pink-400" size={14} /> GPU
               </span>
-              <span className="text-slate-600">~8s</span>
+              {/* <span className="text-slate-600">~8s</span> */}
             </div>
           </div>
 
@@ -596,6 +605,53 @@ ${POWER_TIERS.map(
                       <span>Titan Class</span>
                     </div>
                   </div>
+
+                  {/* System Info */}
+                  {systemInfo && (
+                    <div className="mt-8 pt-6 border-t border-slate-800">
+                      <div className="text-[10px] uppercase tracking-widest text-slate-600 mb-3">
+                        System Detected
+                      </div>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                        <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-800">
+                          <div className="text-slate-500 mb-1">Platform</div>
+                          <div className="text-slate-300 font-mono">
+                            {systemInfo.platform}
+                          </div>
+                        </div>
+                        <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-800">
+                          <div className="text-slate-500 mb-1">GPU</div>
+                          <div
+                            className="text-slate-300 font-mono truncate"
+                            title={systemInfo.gpuRenderer}
+                          >
+                            {systemInfo.gpuRenderer
+                              .split("/")[0]
+                              .split("(")[0]
+                              .trim()}
+                          </div>
+                        </div>
+                        <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-800">
+                          <div className="text-slate-500 mb-1">CPU Threads</div>
+                          <div className="text-slate-300 font-mono">
+                            {systemInfo.threads}
+                            {systemInfo.threadsNote && (
+                              <span className="text-slate-600 text-[10px]">
+                                {" "}
+                                *
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-800">
+                          <div className="text-slate-500 mb-1">Display</div>
+                          <div className="text-slate-300 font-mono">
+                            {systemInfo.physicalResolution}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
